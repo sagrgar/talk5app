@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="inProgress">
+        <item name="colorControlActivated">#0F9D58</item>
+    </style>
+
+    <style name="notStarted">
+        <item name="colorControlActivated">#DB4437</item>
+    </style>
+
+
+</resources>
