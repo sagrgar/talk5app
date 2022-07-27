@@ -181,10 +181,11 @@ public class HomeActivity extends AppCompatActivity {
                     return;
                 }
 
-//                AuditResult auditResultList = response.body();
-//                for (Data data : auditResultList.getData()){
-//                     dataList.add(data);
-//                }
+                
+                AuditResult auditResultList = response.body();
+                for (Data data : auditResultList.getData()){
+                     dataList.add(data);
+                }
 
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override

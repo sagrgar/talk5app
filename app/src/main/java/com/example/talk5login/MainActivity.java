@@ -61,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = username_et.getText().toString();
-                String password = password_et.getText().toString();
+                String username = "sample470";//username_et.getText().toString();
+                String password = "password";//password_et.getText().toString();
 
                 Authentication authentication = new Authentication(username, password, "password");
                 Call<Authentication> call = jsonPlaceHolderApi.createPost(authentication);

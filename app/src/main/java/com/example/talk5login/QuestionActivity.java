@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.example.talk5login.Model.QuestionData;
 import com.example.talk5login.Model.QuestionModel;
@@ -18,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class QuestionActivity extends AppCompatActivity {
 
+    private TextView showHere_tv;
     private JsonPlaceHolderApi jsonPlaceHolderApi;
     private int auditResultHeaderID;
     @Override
@@ -27,6 +29,8 @@ public class QuestionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_question);
 
         String bearer = HomeActivity.BEARER_TOKEN;
+
+        showHere_tv = findViewById(R.id.showHere_tv);
 
         Intent intent = getIntent();
         auditResultHeaderID = intent.getIntExtra("id", -1);
@@ -48,7 +52,7 @@ public class QuestionActivity extends AppCompatActivity {
                 QuestionModel questionList = response.body();
                 for (QuestionData questionData : questionList.getQuestionData()){
                     if (questionData.getHeaderID() == auditResultHeaderID){
-                        Log.d("sagrgarQyestionAct", questionData.getQuestion() + "?");
+                        showHere_tv.append(questionData.getQuestion()+"?\n");
 
                     }
 
