@@ -2,8 +2,7 @@ package com.example.talk5login;
 
 import com.example.talk5login.Model.AuditResult;
 import com.example.talk5login.Model.Authentication;
-
-import java.util.List;
+import com.example.talk5login.Model.QuestionModel;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -18,6 +17,9 @@ public interface JsonPlaceHolderApi {
 
     @GET("/api/mobile/sync?fromversionid=0&entityname=auditresultheader")
     Call<AuditResult> getAuditResults(@Header("Authorization") String bearerToken);
+
+    @GET("/api/mobile/sync?fromversionid=0&entityname=auditresult")
+    Call<QuestionModel> getQuestions(@Header("Authorization") String bearerToken);
 
 
 }

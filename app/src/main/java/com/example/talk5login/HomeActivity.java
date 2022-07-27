@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,7 +24,6 @@ import com.example.talk5login.Model.AuditResult;
 import com.example.talk5login.Model.Data;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
@@ -43,8 +43,12 @@ public class HomeActivity extends AppCompatActivity {
     private RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<Data> dataList;
     private SwipeRefreshLayout swipeRefreshLayout;
-private Realm realm;
+    private Realm realm;
     private JsonPlaceHolderApi jsonPlaceHolderApi;
+
+    public static final String SHARED_PREFS = "sharedPrefs";
+    public static String BEARER_TOKEN;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,17 +90,17 @@ private Realm realm;
         inProgress_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked){
+                if (isChecked) {
                     notStarted_switch.setChecked(false);
 
                     ArrayList<Data> inProgressData = new ArrayList<>();
-                    for (Data data: dataList){
-                        if (data.getQuestionCount() > data.getQuestionCompleted() && data.getQuestionCompleted() > 0){
+                    for (Data data : dataList) {
+                        if (data.getQuestionCount() > data.getQuestionCompleted() && data.getQuestionCompleted() > 0) {
                             inProgressData.add(data);
                         }
                     }
                     recyclerViewAdapter.setData(inProgressData);
-                }else {
+                } else {
                     recyclerViewAdapter.setData(dataList);
                 }
             }
@@ -105,16 +109,16 @@ private Realm realm;
         notStarted_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked){
+                if (isChecked) {
                     inProgress_switch.setChecked(false);
                     ArrayList<Data> noStartedData = new ArrayList<>();
-                    for (Data data: dataList){
-                        if (data.getQuestionCompleted() == 0){
+                    for (Data data : dataList) {
+                        if (data.getQuestionCompleted() == 0) {
                             noStartedData.add(data);
                         }
                     }
                     recyclerViewAdapter.setData(noStartedData);
-                }else {
+                } else {
                     recyclerViewAdapter.setData(dataList);
                 }
             }
@@ -129,7 +133,7 @@ private Realm realm;
 
     }
 
-    public ArrayList<Data> readDataFromDB(){
+    public ArrayList<Data> readDataFromDB() {
 
         ArrayList<Data> dataListz = new ArrayList<>();
         realm.executeTransaction(new Realm.Transaction() {
@@ -138,33 +142,41 @@ private Realm realm;
 
                 RealmResults<Data> dataRealmResults = realm.where(Data.class).findAll();
 
-                for (Data data : dataRealmResults){
+                for (Data data : dataRealmResults) {
                     dataListz.add(data);
                 }
                 recyclerViewAdapter.setData(dataListz);
                 recyclerView.setAdapter(recyclerViewAdapter);
             }
         });
-        return  dataListz;
+        return dataListz;
     }
-    public void retrofitData(){
+
+    public void retrofitData() {
         Intent intent = getIntent();
         String bearerToken = intent.getStringExtra("BearerToken");
         Log.d("sagrgarHomeAct", bearerToken);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://qa-talk5api.azurewebsites.net")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+         BEARER_TOKEN = bearerToken;
+//        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+//        SharedPreferences.Editor  editor= sharedPreferences.edit();
+//        editor.putString(BEARER_TOKEN, bearerToken);
+//        editor.apply();
 
-        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("https://qa-talk5api.azurewebsites.net")
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+//
+//        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 
+        jsonPlaceHolderApi = RetrofitSingleton.getJsonPlaceHolderApi();
         Call<AuditResult> call = jsonPlaceHolderApi.getAuditResults("Bearer " + bearerToken);
 
         call.enqueue(new Callback<AuditResult>() {
             @Override
             public void onResponse(Call<AuditResult> call, Response<AuditResult> response) {
-                if (!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Log.d("sagrgarHomeAct", "Code: " + response.code());
                     return;
                 }
@@ -192,6 +204,7 @@ private Realm realm;
             }
         });
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -201,20 +214,20 @@ private Realm realm;
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-       switch (item.getItemId()) {
-           case R.id.notification:
-               Toast.makeText(this, "Notifications clicked", Toast.LENGTH_SHORT).show();
+        switch (item.getItemId()) {
+            case R.id.notification:
+                Toast.makeText(this, "Notifications clicked", Toast.LENGTH_SHORT).show();
                 return true;
 
-           case R.id.qr:
-               Toast.makeText(this, "QR Scanner clicked", Toast.LENGTH_SHORT).show();
-               return true;
+            case R.id.qr:
+                Toast.makeText(this, "QR Scanner clicked", Toast.LENGTH_SHORT).show();
+                return true;
 
-           case R.id.setting:
-               Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
+            case R.id.setting:
+                Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show();
 
-           default:
-               return super.onOptionsItemSelected(item);
-       }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

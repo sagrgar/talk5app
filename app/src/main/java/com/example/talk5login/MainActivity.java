@@ -48,13 +48,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         dummyLinks();
+//
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl("https://qa-talk5api.azurewebsites.net")
+//                        .addConverterFactory(GsonConverterFactory.create())
+//                                .build();
+//
+//        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://qa-talk5api.azurewebsites.net")
-                        .addConverterFactory(GsonConverterFactory.create())
-                                .build();
-
-        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
+        jsonPlaceHolderApi = RetrofitSingleton.getJsonPlaceHolderApi();
 
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
