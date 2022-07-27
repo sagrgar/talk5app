@@ -3,6 +3,7 @@ package com.example.talk5login.Model;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class Data extends RealmObject {
     @SerializedName("AuditName")
@@ -17,6 +18,7 @@ public class Data extends RealmObject {
     @SerializedName("ID")
     private int id;
 
+    @PrimaryKey
     @SerializedName("AuditID")
     private int auditId;
 

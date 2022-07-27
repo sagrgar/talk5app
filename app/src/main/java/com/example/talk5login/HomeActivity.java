@@ -27,6 +27,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import io.realm.RealmResults;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,6 +82,7 @@ private Realm realm;
         });
 
         retrofitData();
+        dataList = readDataFromDB();
         inProgress_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -127,6 +129,24 @@ private Realm realm;
 
     }
 
+    public ArrayList<Data> readDataFromDB(){
+
+        ArrayList<Data> dataListz = new ArrayList<>();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+
+                RealmResults<Data> dataRealmResults = realm.where(Data.class).findAll();
+
+                for (Data data : dataRealmResults){
+                    dataListz.add(data);
+                }
+                recyclerViewAdapter.setData(dataListz);
+                recyclerView.setAdapter(recyclerViewAdapter);
+            }
+        });
+        return  dataListz;
+    }
     public void retrofitData(){
         Intent intent = getIntent();
         String bearerToken = intent.getStringExtra("BearerToken");
@@ -149,10 +169,10 @@ private Realm realm;
                     return;
                 }
 
-                AuditResult auditResultList = response.body();
-                for (Data data : auditResultList.getData()){
-                     dataList.add(data);
-                }
+//                AuditResult auditResultList = response.body();
+//                for (Data data : auditResultList.getData()){
+//                     dataList.add(data);
+//                }
 
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
@@ -162,8 +182,8 @@ private Realm realm;
                         realm.insertOrUpdate(dataRealmList);
                     }
                 });
-                recyclerViewAdapter.setData(dataList);
-                recyclerView.setAdapter(recyclerViewAdapter);
+//                recyclerViewAdapter.setData(dataList);
+//                recyclerView.setAdapter(recyclerViewAdapter);
             }
 
             @Override

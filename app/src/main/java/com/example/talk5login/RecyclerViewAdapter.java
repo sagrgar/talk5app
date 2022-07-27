@@ -3,6 +3,7 @@ package com.example.talk5login;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,15 +44,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         Data newdata = dataArrayList.get(position);
         holder.question_tv.setText(String.valueOf(newdata.getQuestionCount()) + " Questions");
         holder.resultTitle_tv.setText(newdata.getAuditName());
-       if (newdata.getQuestionCount() > newdata.getQuestionCompleted() && newdata.getQuestionCompleted()> 0 ){
-           holder.regGreen.setBackgroundColor(Color.parseColor("#0F9D58"));
-       }else {
-           holder.regGreen.setBackgroundColor(Color.parseColor("#009ada"));
-       }
-       if (newdata.getQuestionCompleted() == 0){
-           holder.regGreen.setBackgroundColor(Color.parseColor("#DB4437"));
-       }
+        if (newdata.getQuestionCount() > newdata.getQuestionCompleted() && newdata.getQuestionCompleted() > 0) {
+            holder.regGreen.setBackgroundColor(Color.parseColor("#0F9D58"));
+        } else {
+            holder.regGreen.setBackgroundColor(Color.parseColor("#009ada"));
+        }
+        if (newdata.getQuestionCompleted() == 0) {
+            holder.regGreen.setBackgroundColor(Color.parseColor("#DB4437"));
+        }
 
+        holder.parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, QuestionActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
+        /*
        holder.parent.setOnLongClickListener(new View.OnLongClickListener() {
            @Override
            public boolean onLongClick(View view) {
@@ -84,9 +94,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
                return false;
            }
-       });
-
-
+       });*/
 
 
     }
@@ -96,16 +104,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         return dataArrayList.size();
     }
 
-    public void setData(ArrayList<Data> data){
+    public void setData(ArrayList<Data> data) {
         this.dataArrayList = data;
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private RelativeLayout regGreen;
         private TextView question_tv, resultTitle_tv;
         private CardView parent;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
